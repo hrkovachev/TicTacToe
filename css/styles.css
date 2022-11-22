@@ -1,0 +1,164 @@
+@font-face {
+    font-family: Montserrat;
+    src: url("../fonts/Montserrat-VariableFont_wght.ttf"),
+        url("../fonts/Montserrat-Italic-VariableFont_wght.ttf");
+}
+
+input {
+    all: unset;
+}
+
+body {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+.main,
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 95vh;
+    width: 100vw;
+    margin-top: auto;
+}
+
+.start-window {
+    border: solid black 3px;
+    border-radius: 15px;
+    padding: 3rem 3rem 0.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.players-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.single-player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.player-name {
+    max-width: 250px;
+    text-align: center;
+}
+
+.vs-symbol {
+    font-size: 6rem;
+    font-weight: 600;
+}
+
+.button-area {
+    display: flex;
+    justify-content: center;
+}
+
+.info-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 575;
+}
+
+.names-board {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    font-size: large;
+}
+
+.message-board {
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-one {
+    text-align: right;
+    font-style: oblique -25deg;
+}
+
+.player-two {
+    text-align: left;
+    font-style: oblique 25deg;
+}
+
+.player-one,
+.player-two {
+    width: 150px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    border: 2px solid black;
+}
+
+.single-square {
+    border: 1px solid black;
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.5rem;
+    font-weight: 300;
+}
+
+.single-square:hover {
+    background-color: rgb(249, 247, 244);
+}
+
+.button {
+    width: 15rem;
+    height: 2.5rem;
+    border-radius: 8px;
+    border: solid black 3px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.button:active {
+    /* Scaling button to 0.98 to its original size */
+    transform: scale(0.98);
+    /* Lowering the shadow */
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+}
+
+.footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.footer a {
+    color: black;
+    font-weight: 600;
+    text-decoration: none;
+}

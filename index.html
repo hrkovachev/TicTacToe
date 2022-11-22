@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tic Tac Toe</title>
+        <link rel="stylesheet" href="css/styles.css" />
+        <script src="js/scripts.js" defer></script>
+    </head>
+    <body>
+        <div class="start-screen">
+            <div class="start-window">
+                <div class="players-info">
+                    <div class="single-player-info">
+                        <input
+                            id="player-name-1"
+                            type="text"
+                            class="player-name"
+                            value="Player 1"
+                        />
+                        <div class="player-symbol">X</div>
+                    </div>
+                    <div class="vs-symbol">VS</div>
+                    <div class="single-player-info">
+                        <input
+                            id="player-name-2"
+                            type="text"
+                            class="player-name"
+                            value="Player 2"
+                        />
+                        <div class="player-symbol">O</div>
+                    </div>
+                </div>
+                <div class="button-area">
+                    <div class="button-area">
+                        <input
+                            id="btn-play"
+                            class="button"
+                            type="button"
+                            value="Play"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main" style="display: none">
+            <div class="info-board">
+                <div class="names-board">
+                    <div id="label-player-1" class="player-one"></div>
+                    <div>VS</div>
+                    <div id="label-player-2" class="player-two"></div>
+                </div>
+                <div id="label-outcome" class="message-board"></div>
+            </div>
+
+            <div class="game-board">
+                <dvi class="single-square" data-position="0"></dvi>
+                <dvi class="single-square" data-position="1"></dvi>
+                <dvi class="single-square" data-position="2"></dvi>
+                <dvi class="single-square" data-position="3"></dvi>
+                <dvi class="single-square" data-position="4"></dvi>
+                <dvi class="single-square" data-position="5"></dvi>
+                <dvi class="single-square" data-position="6"></dvi>
+                <dvi class="single-square" data-position="7"></dvi>
+                <dvi class="single-square" data-position="8"></dvi>
+            </div>
+            <div class="button-area">
+                <input
+                    id="btn-restart"
+                    class="button"
+                    type="button"
+                    value="New Game"
+                />
+            </div>
+        </div>
+        <div class="footer">
+            <span
+                >Created by
+                <a href="https://github.com/hrkovachev">hrkovachev</a></span
+            >
+        </div>
+    </body>
+</html>
