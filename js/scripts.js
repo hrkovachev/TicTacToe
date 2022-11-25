@@ -95,6 +95,7 @@ const gameboard = (function () {
     let _gameboardArr = new Array(9);
     let _singleSquares = document.getElementsByClassName("single-square");
     const _labelOutcome = document.getElementById("label-outcome");
+    const _gameBoardDiv = document.getElementsByClassName("game-board")[0];
 
     const registerMove = (symbol, position) => {
         _gameboardArr[position] = symbol;
@@ -113,7 +114,14 @@ const gameboard = (function () {
         // remove event listeners
         for (square of _singleSquares) {
             square.removeEventListener("click", _handlePlayerMove);
+            square.removeEventListener("mouseover", _handleMouseOver);
+            square.removeEventListener("mouseout", _handleMouseOut);
         }
+
+        // vibrate gameboard on win
+        _gameBoardDiv.style.animation = "shake 0.5s";
+        _gameBoardDiv.style.animationIterationCount = 1;
+
         // display who is the winner
         _labelOutcome.textContent = `${
             gameController.getCurrentPlayer().name
@@ -208,16 +216,36 @@ const gameboard = (function () {
         }
     };
 
+    const _handleMouseOver = (e) => {
+        if (e.target.textContent.trim() === "") {
+            let player = gameController.getCurrentPlayer();
+            e.target.textContent = player.symbol;
+            e.target.style.color = "grey";
+        }
+    };
+
+    const _handleMouseOut = (e) => {
+        let position = e.target.dataset.position;
+        e.target.textContent = _gameboardArr[position];
+        e.target.style.color = "black";
+    };
+
     const initialize = () => {
         // update player names
         gameController.updatePlayerNames();
         // hook event handlers
         for (square of _singleSquares) {
             square.addEventListener("click", _handlePlayerMove, { once: true });
+            square.addEventListener("mouseover", _handleMouseOver);
+            square.addEventListener("mouseout", _handleMouseOut);
             square.style.color = "black";
         }
         // clear outcome from last game
         _labelOutcome.textContent = "";
+
+        // remove vibration effect from gameboard
+        _gameBoardDiv.style.removeProperty("animation");
+        _gameBoardDiv.style.removeProperty("animationIterationCount");
     };
 
     const clear = () => {
