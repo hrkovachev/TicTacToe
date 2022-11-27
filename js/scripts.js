@@ -81,7 +81,6 @@ const botPlayer = (function () {
                 }
             }
         }
-        console.log("The value of the best Move is:", bestVal);
         return bestMove;
     };
     function _isMovesLeft(board) {
@@ -220,12 +219,19 @@ const gameboard = (function () {
     const _gameBoardDiv = document.getElementsByClassName("game-board")[0];
     const registerMove = (symbol, position) => {
         _gameboardArr[position] = symbol;
-        console.log(_gameboardArr);
         let gameWon = _checkForWinners();
         if (!gameWon) {
             _checkForDraw();
         }
         return gameWon;
+    };
+
+    const _removePlayListeners = () => {
+        for (square of _singleSquares) {
+            square.removeEventListener("click", _handlePlayerMove);
+            square.removeEventListener("mouseover", _handleMouseOver);
+            square.removeEventListener("mouseout", _handleMouseOut);
+        }
     };
 
     const _handleWin = (winningElementsPositions) => {
@@ -234,11 +240,7 @@ const gameboard = (function () {
             _singleSquares[pos].style.color = "#12A637";
         });
         // remove event listeners
-        for (square of _singleSquares) {
-            square.removeEventListener("click", _handlePlayerMove);
-            square.removeEventListener("mouseover", _handleMouseOver);
-            square.removeEventListener("mouseout", _handleMouseOut);
-        }
+        _removePlayListeners();
 
         // vibrate gameboard on win
         _gameBoardDiv.style.animation = "shake 0.5s";
@@ -252,6 +254,7 @@ const gameboard = (function () {
     };
 
     const _handleDraw = () => {
+        _removePlayListeners();
         _labelOutcome.textContent = "DRAW";
     };
 
@@ -268,6 +271,9 @@ const gameboard = (function () {
         });
         if (numXs + numOs === 9) {
             _handleDraw();
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -350,7 +356,6 @@ const gameboard = (function () {
     };
 
     const _checkForWinners = () => {
-        console.log(_gameboardArr);
         let gameWon =
             _checkHorizontals() || _checkVericals() || _checkDiagonals();
         return gameWon;
@@ -371,9 +376,9 @@ const gameboard = (function () {
         e.target.textContent = player.symbol;
         e.target.style.color = "black";
         let gameWon = player.playMove(position);
-        if (!gameWon) {
+        if (!gameWon && !_checkForDraw()) {
             gameController.changePlayer();
-            if (gameController.getCurrentMode() === "bot") {
+            if (gameController.getCurrentMode() === "bot" && !gameWon) {
                 _playBotMove();
             }
         }
