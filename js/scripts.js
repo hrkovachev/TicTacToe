@@ -226,11 +226,26 @@ const gameboard = (function () {
         return gameWon;
     };
 
-    const _removePlayListeners = () => {
-        for (square of _singleSquares) {
-            square.removeEventListener("click", _handlePlayerMove);
-            square.removeEventListener("mouseover", _handleMouseOver);
-            square.removeEventListener("mouseout", _handleMouseOut);
+    const _removePlayListeners = (index = undefined) => {
+        if (!index) {
+            for (square of _singleSquares) {
+                square.removeEventListener("click", _handlePlayerMove);
+                square.removeEventListener("mouseover", _handleMouseOver);
+                square.removeEventListener("mouseout", _handleMouseOut);
+            }
+        } else {
+            _singleSquares[index].removeEventListener(
+                "click",
+                _handlePlayerMove
+            );
+            _singleSquares[index].removeEventListener(
+                "mouseover",
+                _handleMouseOver
+            );
+            _singleSquares[index].removeEventListener(
+                "mouseout",
+                _handleMouseOut
+            );
         }
     };
 
@@ -425,6 +440,8 @@ const gameboard = (function () {
 
         // render move on screen
         _singleSquares[botMove].textContent = player.symbol;
+        // remove event listener to make square not playable
+        _removePlayListeners(botMove);
 
         if (!gameWon) {
             gameController.changePlayer();
