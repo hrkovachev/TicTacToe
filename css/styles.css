@@ -41,7 +41,8 @@ body {
     gap: 3rem;
 }
 
-.mode-selection {
+.mode-selection,
+.difficulty-selection-div {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,6 +59,15 @@ body {
     font-size: 2rem;
     border: solid black 3px;
     border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.difficulty-selection-div select {
+    display: none;
+    background-color: white;
+    border: solid black 2px;
+    border-radius: 8px;
+    font-size: 1.3rem;
     padding: 0.5rem;
 }
 

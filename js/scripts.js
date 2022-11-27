@@ -108,6 +108,8 @@ const gameController = (function () {
 
     const _icnOpponent = document.getElementById("icn-opponent");
 
+    const _difficultyDropdown = document.getElementById("difficulty-dropdown");
+
     let _namePlayer1 = document.getElementById("player-name-1");
     let _namePlayer2 = document.getElementById("player-name-2");
 
@@ -170,10 +172,16 @@ const gameController = (function () {
         return _btnModeChange.dataset.mode;
     };
 
+    const getDifficulty = () => {
+        return _difficultyDropdown.value;
+    };
+
     const _handleModeChange = (e) => {
         let mode = getCurrentMode();
         if (mode === "player") {
             mode = "bot";
+            // display difficulty options
+            _difficultyDropdown.style.display = "inline";
             // change icon of button
             _icnOpponent.classList.replace("icn-player", "icn-bot");
             // set player 2 name to AI
@@ -181,6 +189,9 @@ const gameController = (function () {
             _namePlayer2.disabled = true;
         } else {
             mode = "player";
+            // hide difficulty options
+            _difficultyDropdown.style.display = "none";
+
             _icnOpponent.classList.replace("icn-bot", "icn-player");
             _namePlayer2.value = "Player 2";
             _namePlayer2.disabled = false;
@@ -198,6 +209,7 @@ const gameController = (function () {
         changePlayer,
         updatePlayerNames,
         getCurrentMode,
+        getDifficulty,
     };
 })();
 
@@ -362,18 +374,52 @@ const gameboard = (function () {
         if (!gameWon) {
             gameController.changePlayer();
             if (gameController.getCurrentMode() === "bot") {
-                playBotMove();
+                _playBotMove();
             }
         }
     };
 
-    const playBotMove = () => {
-        let player = gameController.getCurrentPlayer();
+    const _getBotMove = () => {
         let bestMove = botPlayer._findBestMove(_gameboardArr);
-        let gameWon = player.playMove(bestMove);
+        let diff = gameController.getDifficulty();
+        let threshold;
+        let move;
+        switch (diff) {
+            case "0":
+                threshold = 0.1;
+                break;
+            case "1":
+                threshold = 0.5;
+                break;
+            case "2":
+                threshold = 0.9;
+                break;
+            case "3":
+                threshold = 1;
+                break;
+        }
+        let rand = Math.random();
+        if (rand < threshold) {
+            move = bestMove;
+        } else {
+            move = getRandomInt(9);
+            while (_gameboardArr[move] !== undefined) {
+                move = getRandomInt(9);
+            }
+        }
+        return move;
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+    };
+
+    const _playBotMove = () => {
+        let player = gameController.getCurrentPlayer();
+        let botMove = _getBotMove();
+        let gameWon = player.playMove(botMove);
 
         // render move on screen
-        _singleSquares[bestMove].textContent = player.symbol;
+        _singleSquares[botMove].textContent = player.symbol;
 
         if (!gameWon) {
             gameController.changePlayer();
