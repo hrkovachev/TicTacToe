@@ -357,6 +357,7 @@ const gameboard = (function () {
         let player = gameController.getCurrentPlayer();
         let position = e.target.dataset.position;
         e.target.textContent = player.symbol;
+        e.target.style.color = "black";
         let gameWon = player.playMove(position);
         if (!gameWon) {
             gameController.changePlayer();
