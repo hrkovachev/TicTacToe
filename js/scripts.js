@@ -1,5 +1,4 @@
 const player = (name, symbol, htmlLabel) => {
-    let _score = 0;
     const playMove = (position) => {
         let gameWon = gameboard.registerMove(symbol, position);
         return gameWon;
@@ -11,6 +10,90 @@ const player = (name, symbol, htmlLabel) => {
         htmlLabel,
     };
 };
+
+const botPlayer = (function () {
+    let bot = "O";
+    let player = "X";
+    const _minimax = (board, depth, isMax) => {
+        let score = gameboard.evaluateBoard(board);
+        // If Maximizer has won, return the game his evaluated score
+        if (score === 10) return score;
+        // If Minimizer has won the game, return his evaluated score
+        if (score === -10) return score;
+        // If there are no more moves and no winner then it is a tie
+        if (_isMovesLeft(board) === false) return 0;
+        // If this maximizer's move
+        if (isMax) {
+            let best = -1000;
+            // Traverse all cells
+            for (let i = 0; i < 9; i++) {
+                // Check if cell is empty
+                if (board[i] === undefined) {
+                    // Make the move
+                    board[i] = bot;
+                    // Call minimax recursively and choose the maximum value
+                    best = Math.max(best, _minimax(board, depth + 1, !isMax));
+                    // Undo the move
+                    board[i] = undefined;
+                }
+            }
+            return best;
+        }
+        // If this minimizer's move
+        else {
+            let best = 1000; // Traverse all cells
+            for (let i = 0; i < 9; i++) {
+                // Check if cell is empty
+                if (board[i] === undefined) {
+                    // Make the move
+                    board[i] = player;
+                    // Call minimax recursively and choose the minimum value
+                    best = Math.min(best, _minimax(board, depth + 1, !isMax));
+                    // Undo the move
+                    board[i] = undefined;
+                }
+            }
+            return best;
+        }
+    };
+    // This will return the best possible
+    // move for the player
+    const _findBestMove = (board) => {
+        let bestVal = -1000;
+        let bestMove = -1;
+        // Traverse all cells, evaluate // minimax function for all empty // cells. And return the cell // with optimal value.
+        for (let i = 0; i < 9; i++) {
+            // Check if cell is empty
+            if (board[i] == undefined) {
+                // Make the move
+                board[i] = bot;
+
+                // compute evaluation function for this move.
+                let moveVal = _minimax(board, 0, false);
+
+                // Undo the move
+                board[i] = undefined;
+
+                // If the value of the current move // is more than the best value, then // update best
+                if (moveVal > bestVal) {
+                    bestMove = i;
+                    bestVal = moveVal;
+                }
+            }
+        }
+        console.log("The value of the best Move is:", bestVal);
+        return bestMove;
+    };
+    function _isMovesLeft(board) {
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === undefined) return true;
+        }
+        return false;
+    }
+    return {
+        _findBestMove,
+    };
+})();
 
 const gameController = (function () {
     // get html elements
@@ -83,12 +166,12 @@ const gameController = (function () {
         _prepareNewGame();
     };
 
-    const _getCurrentMode = () => {
+    const getCurrentMode = () => {
         return _btnModeChange.dataset.mode;
     };
 
     const _handleModeChange = (e) => {
-        let mode = _getCurrentMode();
+        let mode = getCurrentMode();
         if (mode === "player") {
             mode = "bot";
             // change icon of button
@@ -114,6 +197,7 @@ const gameController = (function () {
         getCurrentPlayer,
         changePlayer,
         updatePlayerNames,
+        getCurrentMode,
     };
 })();
 
@@ -122,9 +206,9 @@ const gameboard = (function () {
     let _singleSquares = document.getElementsByClassName("single-square");
     const _labelOutcome = document.getElementById("label-outcome");
     const _gameBoardDiv = document.getElementsByClassName("game-board")[0];
-
     const registerMove = (symbol, position) => {
         _gameboardArr[position] = symbol;
+        console.log(_gameboardArr);
         let gameWon = _checkForWinners();
         if (!gameWon) {
             _checkForDraw();
@@ -175,14 +259,16 @@ const gameboard = (function () {
         }
     };
 
-    const _checkHorizontals = () => {
+    const _checkHorizontals = (bestMoveEvaluation = false) => {
         for (let i = 0; i < 8; i = i + 3) {
             if (
                 _gameboardArr[i] === _gameboardArr[i + 1] &&
                 _gameboardArr[i + 1] === _gameboardArr[i + 2] &&
                 _gameboardArr[i] !== undefined
             ) {
-                _handleWin([i, i + 1, i + 2]);
+                if (!bestMoveEvaluation) {
+                    _handleWin([i, i + 1, i + 2]);
+                }
                 if (
                     _gameboardArr[i] ===
                     gameController.getCurrentPlayer().symbol
@@ -196,14 +282,16 @@ const gameboard = (function () {
         return 0;
     };
 
-    const _checkVericals = () => {
+    const _checkVericals = (bestMoveEvaluation = false) => {
         for (let i = 0; i < 3; i++) {
             if (
                 _gameboardArr[i] === _gameboardArr[i + 3] &&
                 _gameboardArr[i + 3] === _gameboardArr[i + 6] &&
                 _gameboardArr[i] !== undefined
             ) {
-                _handleWin([i, i + 3, i + 6]);
+                if (!bestMoveEvaluation) {
+                    _handleWin([i, i + 3, i + 6]);
+                }
                 if (
                     _gameboardArr[i] ===
                     gameController.getCurrentPlayer().symbol
@@ -217,13 +305,15 @@ const gameboard = (function () {
         return 0;
     };
 
-    const _checkDiagonals = () => {
+    const _checkDiagonals = (bestMoveEvaluation = false) => {
         if (
             _gameboardArr[0] === _gameboardArr[4] &&
             _gameboardArr[4] === _gameboardArr[8] &&
             _gameboardArr[0] !== undefined
         ) {
-            _handleWin([0, 4, 8]);
+            if (!bestMoveEvaluation) {
+                _handleWin([0, 4, 8]);
+            }
             if (_gameboardArr[0] === gameController.getCurrentPlayer().symbol) {
                 return 10;
             } else {
@@ -235,7 +325,9 @@ const gameboard = (function () {
             _gameboardArr[4] === _gameboardArr[6] &&
             _gameboardArr[2] !== undefined
         ) {
-            _handleWin([2, 4, 6]);
+            if (!bestMoveEvaluation) {
+                _handleWin([2, 4, 6]);
+            }
             if (_gameboardArr[2] === gameController.getCurrentPlayer().symbol) {
                 return 10;
             } else {
@@ -246,6 +338,7 @@ const gameboard = (function () {
     };
 
     const _checkForWinners = () => {
+        console.log(_gameboardArr);
         let gameWon =
             _checkHorizontals() || _checkVericals() || _checkDiagonals();
         return gameWon;
@@ -253,7 +346,10 @@ const gameboard = (function () {
 
     const evaluateBoard = () => {
         let gameScore = 0;
-        gameScore += _checkHorizontals() + _checkVericals() + _checkDiagonals();
+        gameScore +=
+            _checkHorizontals(true) +
+            _checkVericals(true) +
+            _checkDiagonals(true);
         return gameScore;
     };
 
@@ -262,6 +358,22 @@ const gameboard = (function () {
         let position = e.target.dataset.position;
         e.target.textContent = player.symbol;
         let gameWon = player.playMove(position);
+        if (!gameWon) {
+            gameController.changePlayer();
+            if (gameController.getCurrentMode() === "bot") {
+                playBotMove();
+            }
+        }
+    };
+
+    const playBotMove = () => {
+        let player = gameController.getCurrentPlayer();
+        let bestMove = botPlayer._findBestMove(_gameboardArr);
+        let gameWon = player.playMove(bestMove);
+
+        // render move on screen
+        _singleSquares[bestMove].textContent = player.symbol;
+
         if (!gameWon) {
             gameController.changePlayer();
         }
