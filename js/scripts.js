@@ -18,27 +18,30 @@ const gameController = (function () {
     const _mainScreen = document.getElementsByClassName("main")[0];
     const _btnPlay = document.getElementById("btn-play");
     const _btnRestart = document.getElementById("btn-restart");
+    const _btnModeChange = document.getElementById("btn-mode-change");
 
     const _labelPlayer1 = document.getElementById("label-player-1");
     const _labelPlayer2 = document.getElementById("label-player-2");
 
-    let _namePlayer1 = document.getElementById("player-name-1").value;
-    let _namePlayer2 = document.getElementById("player-name-2").value;
+    const _icnOpponent = document.getElementById("icn-opponent");
+
+    let _namePlayer1 = document.getElementById("player-name-1");
+    let _namePlayer2 = document.getElementById("player-name-2");
 
     let player1;
     let player2;
     let _currentPlayer;
 
     const updatePlayerNames = () => {
-        _namePlayer1 = document.getElementById("player-name-1").value;
-        _namePlayer2 = document.getElementById("player-name-2").value;
+        _namePlayer1 = document.getElementById("player-name-1");
+        _namePlayer2 = document.getElementById("player-name-2");
         _renderPlayerNames();
     };
 
     const _renderPlayerNames = () => {
         // set player name labels
-        _labelPlayer1.textContent = _namePlayer1;
-        _labelPlayer2.textContent = _namePlayer2;
+        _labelPlayer1.textContent = _namePlayer1.value;
+        _labelPlayer2.textContent = _namePlayer2.value;
     };
 
     const getCurrentPlayer = () => {
@@ -63,8 +66,8 @@ const gameController = (function () {
         gameboard.clear();
         updatePlayerNames();
         // create players
-        player1 = player(_namePlayer1, "X", _labelPlayer1);
-        player2 = player(_namePlayer2, "O", _labelPlayer2);
+        player1 = player(_namePlayer1.value, "X", _labelPlayer1);
+        player2 = player(_namePlayer2.value, "O", _labelPlayer2);
         _setCurrentPlayer(player1);
     };
 
@@ -80,9 +83,32 @@ const gameController = (function () {
         _prepareNewGame();
     };
 
+    const _getCurrentMode = () => {
+        return _btnModeChange.dataset.mode;
+    };
+
+    const _handleModeChange = (e) => {
+        let mode = _getCurrentMode();
+        if (mode === "player") {
+            mode = "bot";
+            // change icon of button
+            _icnOpponent.classList.replace("icn-player", "icn-bot");
+            // set player 2 name to AI
+            _namePlayer2.value = "AI";
+            _namePlayer2.disabled = true;
+        } else {
+            mode = "player";
+            _icnOpponent.classList.replace("icn-bot", "icn-player");
+            _namePlayer2.value = "Player 2";
+            _namePlayer2.disabled = false;
+        }
+        _btnModeChange.dataset.mode = mode;
+    };
+
     // hook handlers
     _btnPlay.addEventListener("click", _handlePlayButton);
     _btnRestart.addEventListener("click", _handleRestartButton);
+    _btnModeChange.addEventListener("click", _handleModeChange);
 
     return {
         getCurrentPlayer,
@@ -146,9 +172,6 @@ const gameboard = (function () {
         });
         if (numXs + numOs === 9) {
             _handleDraw();
-            return true;
-        } else {
-            return false;
         }
     };
 
@@ -160,10 +183,17 @@ const gameboard = (function () {
                 _gameboardArr[i] !== undefined
             ) {
                 _handleWin([i, i + 1, i + 2]);
-                return true;
+                if (
+                    _gameboardArr[i] ===
+                    gameController.getCurrentPlayer().symbol
+                ) {
+                    return 10;
+                } else {
+                    return -10;
+                }
             }
         }
-        return false;
+        return 0;
     };
 
     const _checkVericals = () => {
@@ -174,10 +204,17 @@ const gameboard = (function () {
                 _gameboardArr[i] !== undefined
             ) {
                 _handleWin([i, i + 3, i + 6]);
-                return true;
+                if (
+                    _gameboardArr[i] ===
+                    gameController.getCurrentPlayer().symbol
+                ) {
+                    return 10;
+                } else {
+                    return -10;
+                }
             }
         }
-        return false;
+        return 0;
     };
 
     const _checkDiagonals = () => {
@@ -187,7 +224,11 @@ const gameboard = (function () {
             _gameboardArr[0] !== undefined
         ) {
             _handleWin([0, 4, 8]);
-            return true;
+            if (_gameboardArr[0] === gameController.getCurrentPlayer().symbol) {
+                return 10;
+            } else {
+                return -10;
+            }
         }
         if (
             _gameboardArr[2] === _gameboardArr[4] &&
@@ -195,15 +236,25 @@ const gameboard = (function () {
             _gameboardArr[2] !== undefined
         ) {
             _handleWin([2, 4, 6]);
-            return true;
+            if (_gameboardArr[2] === gameController.getCurrentPlayer().symbol) {
+                return 10;
+            } else {
+                return -10;
+            }
         }
-        return false;
+        return 0;
     };
 
     const _checkForWinners = () => {
         let gameWon =
             _checkHorizontals() || _checkVericals() || _checkDiagonals();
         return gameWon;
+    };
+
+    const evaluateBoard = () => {
+        let gameScore = 0;
+        gameScore += _checkHorizontals() + _checkVericals() + _checkDiagonals();
+        return gameScore;
     };
 
     const _handlePlayerMove = (e) => {
@@ -220,7 +271,7 @@ const gameboard = (function () {
         if (e.target.textContent.trim() === "") {
             let player = gameController.getCurrentPlayer();
             e.target.textContent = player.symbol;
-            e.target.style.color = "grey";
+            e.target.style.color = "LightGray";
         }
     };
 
@@ -261,5 +312,6 @@ const gameboard = (function () {
     return {
         registerMove,
         clear,
+        evaluateBoard,
     };
 })();

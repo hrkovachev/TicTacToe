@@ -1,3 +1,5 @@
+@import url(icons.css);
+
 @font-face {
     font-family: Montserrat;
     src: url("../fonts/Montserrat-VariableFont_wght.ttf"),
@@ -5,6 +7,10 @@
 }
 
 input {
+    all: unset;
+}
+
+button {
     all: unset;
 }
 
@@ -32,7 +38,27 @@ body {
     padding: 3rem 3rem 1rem 3rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 3rem;
+}
+
+.mode-selection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+}
+
+.mode-selection > button {
+    text-align: center;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 2rem;
+    border: solid black 3px;
+    border-radius: 8px;
+    padding: 0.5rem;
 }
 
 .players-info {
@@ -134,7 +160,8 @@ body {
     background-color: rgb(249, 247, 244);
 }
 
-.button {
+.btn,
+button {
     width: 15rem;
     height: 2.5rem;
     border-radius: 8px;
@@ -150,7 +177,18 @@ body {
     cursor: pointer;
 }
 
-.button:active {
+.btn-large {
+    width: 15rem;
+    height: 2.5rem;
+}
+
+.btn-small {
+    height: 2.5rem;
+    width: 10rem;
+}
+
+.btn:active,
+button:active {
     /* Scaling button to 0.98 to its original size */
     transform: scale(0.98);
     /* Lowering the shadow */
@@ -203,4 +241,25 @@ body {
     100% {
         transform: translate(1px, -2px) rotate(-1deg);
     }
+}
+
+.btn-icn {
+    content: "VS";
+    background-repeat: no-repeat;
+    width: 1em;
+    height: 1em;
+    background-size: cover;
+    display: inline-block;
+    margin-right: 1rem;
+    vertical-align: text-bottom;
+}
+
+.icn {
+    content: "";
+    background-repeat: no-repeat;
+    width: 1em;
+    height: 1em;
+    background-size: cover;
+    display: inline-block;
+    vertical-align: text-bottom;
 }

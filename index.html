@@ -5,12 +5,28 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Tic Tac Toe</title>
+        <link
+            rel="shortcut icon"
+            href="./images/favicon.svg"
+            type="image/x-icon"
+        />
         <link rel="stylesheet" href="css/styles.css" />
         <script src="js/scripts.js" defer></script>
     </head>
     <body>
         <div class="start-screen">
             <div class="start-window">
+                <div class="mode-selection">
+                    <button
+                        id="btn-mode-change"
+                        class="btn-small"
+                        data-mode="player"
+                    >
+                        <i class="icn icn-player"></i>
+                        VS
+                        <i id="icn-opponent" class="icn icn-player"></i>
+                    </button>
+                </div>
                 <div class="players-info">
                     <div class="single-player-info">
                         <input
@@ -36,7 +52,7 @@
                     <div class="button-area">
                         <input
                             id="btn-play"
-                            class="button"
+                            class="btn btn-large"
                             type="button"
                             value="Play"
                         />
@@ -68,7 +84,7 @@
             <div class="button-area">
                 <input
                     id="btn-restart"
-                    class="button"
+                    class="btn btn-large"
                     type="button"
                     value="New Game"
                 />
