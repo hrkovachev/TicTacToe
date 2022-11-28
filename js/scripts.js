@@ -227,7 +227,7 @@ const gameboard = (function () {
     };
 
     const _removePlayListeners = (index = undefined) => {
-        if (!index) {
+        if (index === undefined) {
             for (square of _singleSquares) {
                 square.removeEventListener("click", _handlePlayerMove);
                 square.removeEventListener("mouseover", _handleMouseOver);
